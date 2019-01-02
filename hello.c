@@ -1,5 +1,6 @@
 #include <termios.h>
 #include <stdio.h>
+#include <string.h>
 
 static struct termios old, new;
 
@@ -46,13 +47,39 @@ char getche(void)
 }
 
 /* Let's test it out */
+
+
 int main(void) {
+
+  int i = 10;
+  int k = 5;
+  int j = 10;
+  
   char c;
-  printf("(getche example) please type a letter: ");
-  c = getche();
-  printf("\nYou typed: %c\n", c);
-  printf("(getch example) please type a letter...");
+  //printf("(getche example) please type a letter: ");
+  while(1){
+  	while(i){
+  		printf("\n");
+  		if(i == k){
+  			while(j){
+  				printf(" ");
+  				j--;
+  			}
+  			printf("@");
+  		}
+  		i--;
+  	}
+  i = 10;
+  j = 10;
   c = getch();
-  printf("\nYou typed: %c\n", c);
+  if(c == 'w'){
+  	k++;
+  	//printf("ok");
+  };
+  //printf("\nYou typed: %c\n", c);
+  //printf("(getch example) please type a letter...");
+  //c = getche();
+  //printf("\nYou typed: %c\n", c);
+  }
   return 0;
 } 
