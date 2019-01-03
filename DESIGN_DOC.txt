@@ -1,0 +1,23 @@
+The names of the people in the group:
+	Tianrun Liu
+	
+A statement of the problem you are solving and/or a high level description of the project:
+	Multiplayer game over the network,
+	Depends on how hard to program the GUI 
+	I'll make a 2-player tron motorcycle game or 
+	MUD(multiplayer dungeon) based on tron.
+	
+A description as to how the project will be used (describe the user interface)
+	Probably not going to using ncurses
+	#include <terminos.h>
+	I'll figure out how to make the GUI work later
+	
+A description of your technical design:
+	Save user stats in a file
+	Setting up game server (networking)
+	
+A timeline with expected completion dates of parts of the project:
+	Jan 7 - finish GUI
+	Jan 14 - finish server/client setup
+	Jan 21 - complete game design		
+
