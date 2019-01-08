@@ -1,6 +1,10 @@
 #include <termios.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <poll.h>
+
 
 static struct termios old, new;
 
@@ -51,35 +55,61 @@ char getche(void)
 
 int main(void) {
 
-  int i = 10;
+  struct winsize w;
+  struct pollfd mypoll = { STDIN_FILENO, POLLIN|POLLPRI };
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  int i = w.ws_row;
   int k = 5;
   int j = 10;
+  int direction = 1;
   
   char c;
   //printf("(getche example) please type a letter: ");
   while(1){
+  int j_copy = j;
   	while(i){
   		printf("\n");
   		if(i == k){
-  			while(j){
+  			while(j_copy){
   				printf(" ");
-  				j--;
+  				j_copy--;
   			}
   			printf("@");
   		}
   		i--;
-  	}
-  i = 10;
-  j = 10;
-  c = getch();
-  if(c == 'w'){
-  	k++;
-  	//printf("ok");
-  };
-  //printf("\nYou typed: %c\n", c);
-  //printf("(getch example) please type a letter...");
-  //c = getche();
-  //printf("\nYou typed: %c\n", c);
+	  	}
+	  i = w.ws_row;
+
+    char string[10];
+
+   // if( poll(&mypoll, 1, 500) )
+    //{
+    	alarm(0.5);
+        c = getch();
+        
+    //}
+	  
+	  if(c == 'w' && k < w.ws_row){
+	  	direction = 2;
+	  	//printf("ok");
+	  }else if(c == 's' && k > 1){
+	  	direction = 4;
+	  }else if(c == 'a'&& j > 0){
+	  	direction = 3;
+	  }else if(c == 'd'&& j < (w.ws_col - 1)){
+	  	direction = 1;
+	  }
+	  
+	  if(direction == 1){
+	  	j++;
+	  }else if(direction == 2){
+	  	k++;
+	  }else if(direction == 3){
+	  	j--;
+	  }else if(direction ==4){
+	  	k--;
+	  }
+
   }
   return 0;
 } 
