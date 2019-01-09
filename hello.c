@@ -4,7 +4,21 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <poll.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <stdlib.h>
+#include<sys/wait.h> 
 
+#define KEY 66666 //NOT A GOOOD IDEA
+#define SEG_SIZE 4
+
+
+void sighandler(int signo){
+	if(SIGINT == signo){
+		exit(0);
+	}
+}
 
 static struct termios old, new;
 
@@ -63,19 +77,59 @@ int main(void) {
   int j = 10;
   int direction = 1;
   
-  char c;
-  //printf("(getche example) please type a letter: ");
+  int apple_x = 10;
+  int apple_y = 10;
+  
+  char * c;
+  int shared_mem_id;
+	//char * input;
+
+	shared_mem_id = shmget(KEY, SEG_SIZE, IPC_CREAT | 0644);
+  c = shmat(shared_mem_id, 0 , 0);
+  
+  int f;
   while(1){
   int j_copy = j;
+  int apple_x_copy = apple_x;
   	while(i){
   		printf("\n");
   		if(i == k){
+  			if(i == apple_y){
+  				if(j_copy > apple_x_copy){
+  					while(j_copy){
+  						if(j_copy == apple_x_copy){
+  							printf("A");
+  						}else{
+  							printf(" ");
+  							apple_x_copy--;
+  						}
+  					}
+  					printf("@");
+  				}else if(j_copy < apple_x_copy){
+  					while(apple_x_copy){
+  						if(j_copy == apple_x_copy){
+  							printf("@");
+  						}else{
+  							printf(" ");
+  							apple_x_copy--;
+  						}
+  					}
+  					printf("A");  		
+  				}else{
+  					while(j_copy){
+  						printf(" ");
+  						j_copy --;
+  					}
+  					printf("@");
+  				}
+  			}
   			while(j_copy){
   				printf(" ");
   				j_copy--;
   			}
   			printf("@");
   		}
+  		
   		i--;
 	  	}
 	  i = w.ws_row;
@@ -84,29 +138,34 @@ int main(void) {
 
    // if( poll(&mypoll, 1, 500) )
     //{
-    	alarm(0.5);
-        c = getch();
-        
+   	f = fork();
+    if(!f){
+    	signal(SIGINT,sighandler);
+     	*c = getch();
+    }
+    //printf("%c",c);
+    usleep(100000);
+    kill(f,SIGINT);
     //}
 	  
-	  if(c == 'w' && k < w.ws_row){
+	  if(*c == 'w'){
 	  	direction = 2;
 	  	//printf("ok");
-	  }else if(c == 's' && k > 1){
+	  }else if(*c == 's' ){
 	  	direction = 4;
-	  }else if(c == 'a'&& j > 0){
+	  }else if(*c == 'a'){
 	  	direction = 3;
-	  }else if(c == 'd'&& j < (w.ws_col - 1)){
+	  }else if(*c == 'd'){
 	  	direction = 1;
 	  }
 	  
-	  if(direction == 1){
+	  if(direction == 1 && j < (w.ws_col - 1)){
 	  	j++;
-	  }else if(direction == 2){
+	  }else if(direction == 2 && k < w.ws_row){
 	  	k++;
-	  }else if(direction == 3){
+	  }else if(direction == 3 && j > 0){
 	  	j--;
-	  }else if(direction ==4){
+	  }else if(direction ==4 && k > 1){
 	  	k--;
 	  }
 
