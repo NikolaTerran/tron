@@ -8,7 +8,8 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <stdlib.h>
-#include<sys/wait.h> 
+#include <sys/wait.h> 
+#include <time.h>
 
 #define KEY 66666 //NOT A GOOOD IDEA
 #define SEG_SIZE 4
@@ -77,8 +78,13 @@ int main(void) {
   int j = 10;
   int direction = 1;
   
-  int apple_x = 10;
-  int apple_y = 10;
+  int col = w.ws_col;
+  int rol = w.ws_row;
+  
+  srand(time(NULL));
+  
+  int apple_x = rand() % col;
+  int apple_y = rand() % rol;
   
   char * c;
   int shared_mem_id;
@@ -88,51 +94,76 @@ int main(void) {
   c = shmat(shared_mem_id, 0 , 0);
   
   int f;
+
   while(1){
+
   int j_copy = j;
   int apple_x_copy = apple_x;
+  
   	while(i){
   		printf("\n");
   		if(i == k){
   			if(i == apple_y){
   				if(j_copy > apple_x_copy){
   					while(j_copy){
-  						if(j_copy == apple_x_copy){
+  						if(apple_x_copy == 0){
   							printf("A");
+  							j_copy--;
+  							apple_x_copy--;
   						}else{
   							printf(" ");
+  							j_copy--;
   							apple_x_copy--;
   						}
   					}
   					printf("@");
   				}else if(j_copy < apple_x_copy){
   					while(apple_x_copy){
-  						if(j_copy == apple_x_copy){
+  						if(j_copy == 0){
   							printf("@");
+  							apple_x_copy--;
+  							j_copy--;
   						}else{
   							printf(" ");
   							apple_x_copy--;
+  							j_copy--;
   						}
   					}
-  					printf("A");  		
-  				}else{
+  					printf("A");
+  				}else if(j_copy == apple_x_copy){
+  				  	while(j_copy){
+  						printf(" ");
+  						j_copy --;
+  					}
+  					printf("@");
+  					srand(time(NULL) + apple_x);
+  					int apple_x = rand() % col;
+ 					 int apple_y = rand() % rol;	 
+  				}}
+  				//print non_conflict @
+  				else{
   					while(j_copy){
   						printf(" ");
   						j_copy --;
   					}
   					printf("@");
   				}
+  				//end print non_conflict @
   			}
-  			while(j_copy){
-  				printf(" ");
-  				j_copy--;
+  		//print A
+  			if(i == apple_y){
+	  			if(i != k){
+	  			while(apple_x_copy){
+	  				printf(" ");
+	  				apple_x_copy--;
+	  			}
+	  			printf("A");
   			}
-  			printf("@");
   		}
-  		
+  		//end print A
   		i--;
 	  	}
-	  i = w.ws_row;
+	i = w.ws_row;
 
     char string[10];
 
