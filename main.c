@@ -68,6 +68,10 @@ char getche(void)
 /* Let's test it out */
 
 
+void pop_grid(int x, int y){
+
+}
+
 int main(void) {
 
   struct winsize w;
@@ -83,8 +87,8 @@ int main(void) {
   
   srand(time(NULL));
   
-  int apple_x = rand() % col;
-  int apple_y = rand() % rol;
+  int apple_x = rand() % (col - 2) + 2;
+  int apple_y = rand() % (rol - 2) + 2;
   
   char * c;
   int shared_mem_id;
@@ -95,75 +99,106 @@ int main(void) {
   
   int f;
 
+/*difficulty selection */
+  int level;
+  system("clear");
+  printf("Choose a difficulty:\n");
+  printf("1: noob\n");
+  printf("2: experienced\n");
+  printf("3: debugger\n");
+  printf("4: skilled\n");
+  printf("5: master\n");
+  printf("6: superman\n");
+  printf("7: god\n");
+  
+  while(level < 49 || level > 55){
+  	level = getch();
+  	//printf("%d\n",level);
+  }
+  
+  switch(level){
+  	case 49: level = 1000000;
+  	break;
+  	case 50: level = 500000;
+  	break;
+  	case 51: level = 100000;
+  	break;
+  	case 52: level = 50000;
+  	break;
+  	case 53: level = 30000;
+  	break;
+  	case 54: level = 10000;
+  	break;
+  	case 55: level = 1000;
+  
+  }
+  printf("\ngame ready in 3\n");
+  sleep(1);
+  printf("\ngame ready in 2\n");
+  sleep(1);
+  printf("\ngame ready in 1\n");
+  sleep(1);
+  
+  int grid[rol][col];
+  
+  int rol_c = 0;
+  int col_c = 0;
+  
+  //0 " "
+  //1 "@"
+  //2 "#"
+  //3 "A"
+  
+  while(rol_c < rol){
+  	
+		while(col_c < col){
+			grid[rol_c][col_c] = 0;
+			col_c++;
+			printf("%d",grid[rol][col]);
+		}
+		printf("\n");
+		col_c = 0;
+		rol_c ++;
+  }
+  
+  sleep(2);
+  rol_c = 0;
+  
+  int length = 1;
+  
+  	apple_x = rand() % (col - 2) + 2;
+  	apple_y = rand() % (rol - 2) + 2;
+  
   while(1){
+
+
 
   int j_copy = j;
   int apple_x_copy = apple_x;
+  int length_c = length;
   
-  	while(i){
-  		printf("\n");
-  		if(i == k){
-  			if(i == apple_y){
-  				if(j_copy > apple_x_copy){
-  					while(j_copy){
-  						if(apple_x_copy == 0){
-  							printf("A");
-  							j_copy--;
-  							apple_x_copy--;
-  						}else{
-  							printf(" ");
-  							j_copy--;
-  							apple_x_copy--;
-  						}
-  					}
-  					printf("@");
-  				}else if(j_copy < apple_x_copy){
-  					while(apple_x_copy){
-  						if(j_copy == 0){
-  							printf("@");
-  							apple_x_copy--;
-  							j_copy--;
-  						}else{
-  							printf(" ");
-  							apple_x_copy--;
-  							j_copy--;
-  						}
-  					}
-  					printf("A");
-  				}else if(j_copy == apple_x_copy){
-  				  	while(j_copy){
-  						printf(" ");
-  						j_copy --;
-  					}
-  					printf("@");
-  					srand(time(NULL) + apple_x);
-  					int apple_x = rand() % col;
- 					 int apple_y = rand() % rol;	 
-  				}}
-  				//print non_conflict @
-  				else{
-  					while(j_copy){
-  						printf(" ");
-  						j_copy --;
-  					}
-  					printf("@");
-  				}
-  				//end print non_conflict @
-  			}
-  		//print A
-  			if(i == apple_y){
-	  			if(i != k){
-	  			while(apple_x_copy){
-	  				printf(" ");
-	  				apple_x_copy--;
-	  			}
-	  			printf("A");
-  			}
-  		}
-  		//end print A
-  		i--;
-	  	}
-	i = w.ws_row;
+  grid[k][j] = 1; 
+  
+  int lj = j;
+  int lk = k;
+  
+  while(rol_c < rol){
+  	
+		while(col_c < col){
+			col_c++;
+			switch(grid[rol_c][col_c]){
+				case 0: printf(" "); break;
+				case 1: printf("@"); break;
+				case 2: printf("#"); break;
+				case 3: printf("A"); break;
+			}
+		}
+		printf("\n");
+		col_c = 0;
+		rol_c ++;
+  }
+  
+  rol_c = 0;
 
     char string[10];
 
@@ -175,7 +210,7 @@ int main(void) {
      	*c = getch();
     }
     //printf("%c",c);
-    usleep(100000);
+    usleep(level);
     kill(f,SIGINT);
     //}
 	  
@@ -190,14 +225,22 @@ int main(void) {
 	  	direction = 1;
 	  }
 	  
-	  if(direction == 1 && j < (w.ws_col - 1)){
+	  if(direction == 1 && j < (col - 1)){
 	  	j++;
-	  }else if(direction == 2 && k < w.ws_row){
+	  	grid[lk][lj] = 0;
+	  	lj = j; 
+	  }else if(direction == 2 && k < rol){
 	  	k++;
-	  }else if(direction == 3 && j > 0){
+	  	grid[lk][lj] = 0;
+	  	lk = k; 
+	  }else if(direction == 3 && j > 1){
 	  	j--;
-	  }else if(direction ==4 && k > 1){
+	  	grid[lk][lj] = 0;
+	  	lj = j; 
+	  }else if(direction ==4 && k > 2){
 	  	k--;
+	  	grid[lk][lj] = 0;
+	  	lk = k; 
 	  }
 
   }
