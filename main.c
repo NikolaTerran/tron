@@ -154,28 +154,33 @@ int main(void) {
 		while(col_c < col){
 			grid[rol_c][col_c] = 0;
 			col_c++;
-			printf("%d",grid[rol][col]);
+			//printf("%d",grid[rol][col]);
 		}
-		printf("\n");
+		//printf("\n");
 		col_c = 0;
 		rol_c ++;
   }
   
-  sleep(2);
+  //sleep(2);
   rol_c = 0;
   
-  int length = 1;
+  int length = 0;
   
-  	apple_x = rand() % (col - 2) + 2;
-  	apple_y = rand() % (rol - 2) + 2;
+  apple_x = rand() % (col - 2) + 2;
+  apple_y = rand() % (rol - 2) + 2;
+  
+  int zero = 0;
+  
+  int dir_ts = 0;
+  int dir_te[100000];
+  
+  int length_c = length;
   
   while(1){
-
-
-
+  grid[apple_y][apple_x] = 3; 
   int j_copy = j;
   int apple_x_copy = apple_x;
-  int length_c = length;
+  
   
   grid[k][j] = 1; 
   
@@ -183,7 +188,6 @@ int main(void) {
   int lk = k;
   
   while(rol_c < rol){
-  	
 		while(col_c < col){
 			col_c++;
 			switch(grid[rol_c][col_c]){
@@ -215,32 +219,309 @@ int main(void) {
     //}
 	  
 	  if(*c == 'w'){
-	  	direction = 2;
+	  	direction = 4;
 	  	//printf("ok");
 	  }else if(*c == 's' ){
-	  	direction = 4;
+	  	direction = 2;
 	  }else if(*c == 'a'){
 	  	direction = 3;
 	  }else if(*c == 'd'){
 	  	direction = 1;
 	  }
-	  
+
+//printf("length: %d | c: %d\n",length,length_c);
+//sleep(2);
+
+	grid[k][j] = 0;
 	  if(direction == 1 && j < (col - 1)){
-	  	j++;
-	  	grid[lk][lj] = 0;
-	  	lj = j; 
-	  }else if(direction == 2 && k < rol){
-	  	k++;
-	  	grid[lk][lj] = 0;
-	  	lk = k; 
+	  	if(grid[k][j + 1] == 3){
+	  		length++;
+	  		length_c = length;
+	  		apple_x = rand() % (col - 2) + 2;
+  			apple_y = rand() % (rol - 2) + 2;
+	  		
+	  		j++;
+	  		
+	  		dir_te[dir_ts] = 1; 
+	  		dir_ts++;
+	  		int save = dir_ts;
+	  		
+	  		
+	  		while(length_c){
+	  			switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 1;
+	  			 dir_ts--;
+	  			 length_c--;
+	  		}
+	  		
+	  		dir_ts++;
+	  		switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 0;
+	  		
+	  		dir_ts = save;
+	  		length_c = length;
+	  		
+	  	}else{
+	  		j++;
+	  		dir_te[dir_ts] = 1; 
+	  		dir_ts++;
+	  		int save = dir_ts;
+	  		
+	  		
+	  		while(length_c){
+	  			switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 2;
+	  			 dir_ts--;
+	  			 length_c--;
+	  		}
+	  		
+	  		dir_ts++;
+	  		switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 0;
+	  			 
+	  		
+	  		dir_ts = save;
+	  		length_c = length;
+	  	} 
+	  }else if(direction == 2 && k < (rol - 1)){
+	 	if(grid[k + 1][j] == 3){
+	  		length++;
+	  		apple_x = rand() % (col - 2) + 2;
+  			apple_y = rand() % (rol - 2) + 2;
+	  		
+	  		
+	  		k++;
+	  		dir_te[dir_ts] = 2; 
+	  		dir_ts++;
+	  		int save = dir_ts;
+	  		
+	  		
+	  		while(length_c){
+	  			switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 1;
+	  			 dir_ts--;
+	  			 length_c--;
+	  		}
+	  		
+	  		
+	  		dir_ts++;
+	  		switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 0;
+	  			 
+	  		dir_ts = save;
+	  		length_c = length;
+	  		
+	  		
+	  	}else{
+	  		k++;
+	  		printf("here1\n");
+	  		dir_te[dir_ts] = 2; 
+	  		dir_ts++;
+	  		int save = dir_ts;
+	  		
+	  		
+	  		while(length_c){
+	  			switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 1;
+	  			 dir_ts--;
+	  			 length_c--;
+	  		}
+	  		
+	  		
+	  		dir_ts++;
+	  		switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 0;
+	  			 
+	  			 
+	  		dir_ts = save;
+	  		length_c = length;
+	  	} 
 	  }else if(direction == 3 && j > 1){
-	  	j--;
-	  	grid[lk][lj] = 0;
-	  	lj = j; 
-	  }else if(direction ==4 && k > 2){
-	  	k--;
-	  	grid[lk][lj] = 0;
-	  	lk = k; 
+	  	if(grid[k][j - 1] == 3){
+	  		length++;
+	  		apple_x = rand() % (col - 2) + 2;
+  			apple_y = rand() % (rol - 2) + 2;
+	  		
+	  		
+	  		j--;
+	  		
+	  		dir_te[dir_ts] = 3; 
+	  		dir_ts++;
+	  		int save = dir_ts;
+	  		
+	  		
+	  		while(length_c){
+	  			switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 1;
+	  			 dir_ts--;
+	  			 length_c--;
+	  		}
+	  		
+	  		
+	  		dir_ts++;
+	  		switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 0;
+	  			 
+	  			 
+	  		dir_ts = save;
+	  		length_c = length;
+	  		
+	  		
+	  		//ile(length_c < length){
+	  			
+	  		//}
+	  		
+	  	}else{
+		  	j--;
+		  	dir_te[dir_ts] = 3; 
+	  		dir_ts++;
+	  		int save = dir_ts;
+	  		
+	  		
+	  		while(length_c){
+	  			switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 1;
+	  			 dir_ts--;
+	  			 length_c--;
+	  		}
+	  		
+	  		
+	  		dir_ts++;
+	  		switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 0;
+	  			 
+	  		dir_ts = save;
+	  		length_c = length;
+		  } 
+	  }else if(direction ==4 && k > 1){
+	  	if(grid[k - 1][j] == 3){
+	  		length++;
+	  		apple_x = rand() % (col - 2) + 2;
+  			apple_y = rand() % (rol - 2) + 2;
+	  		
+	  		
+	  		k--;
+	  		dir_te[dir_ts] = 4; 
+	  		dir_ts++;
+	  		int save = dir_ts;
+	  		
+	  		
+	  		while(length_c){
+	  			switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 1;
+	  			 dir_ts--;
+	  			 length_c--;
+	  		}
+	  		
+	  		
+	  		dir_ts++;
+	  		switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 0;
+	  		dir_ts = save;
+	  		length_c = length;
+	  		
+	  	}else{
+		  	k--;
+		  	dir_te[dir_ts] = 4; 
+	  		dir_ts++;
+	  		int save = dir_ts;
+	  		
+	  		
+	  		while(length_c){
+	  			switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 1;
+	  			 dir_ts--;
+	  			 length_c--;
+	  		}
+	  		
+	  		
+	  		dir_ts++;
+	  		switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 0;
+	  			 
+	  		dir_ts = save;
+	  		length_c = length;
+		}
 	  }
 
   }
