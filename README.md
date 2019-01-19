@@ -1,8 +1,17 @@
 # tron
-# Please give me the entire saturday afternoon to fix bugs
-# Its 2:51 right now I my average hours of sleep in this week is 4 hours per day
-# (because of 6 projects(include this one))
-# known bugs: 1. not enlongate after ate the 1st apple
-#             2. weird characters appear on the screen
-#             3. type too fast will accidentally end the program
-#             4. you cant die
+# finished
+# known bugs: 1. if you play it too long(> 1hr) you'll cause a seg-fault
+#             2. if you die the character won't showing up in terminal 
+#                again [due the getch() function i copied and pasted from
+#                stack over flow] [what else can you expect me to do it
+#                without using ncurses?]
+#
+# bad coding practices: (you can use this as an classic example for bad 
+#                       coding practices, so it is actually a feature)
+#                a. no separate functions/header files
+#                b. stupid algorithm
+#             
+# add-ons i want to do but didn't have an incentive to do it:
+#             1. multiplayer
+#             2. single player ranking/highscores after u die
+#             3. use good coding practices

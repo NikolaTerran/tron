@@ -21,6 +21,11 @@ void sighandler(int signo){
 	}
 }
 
+void sighandler2(int signo){
+	if(SIGINT == signo){
+	}
+}
+
 static struct termios old, new;
 
 /* Initialize new terminal i/o settings */
@@ -73,6 +78,7 @@ void pop_grid(int x, int y){
 }
 
 int main(void) {
+	signal(SIGINT, sighandler2);
 
   struct winsize w;
   struct pollfd mypoll = { STDIN_FILENO, POLLIN|POLLPRI };
@@ -208,24 +214,26 @@ int main(void) {
 
    // if( poll(&mypoll, 1, 500) )
     //{
-   	f = fork();
+    f = fork();
     if(!f){
     	signal(SIGINT,sighandler);
      	*c = getch();
+     	exit(0);
     }
+    
     //printf("%c",c);
     usleep(level);
     kill(f,SIGINT);
     //}
 	  
-	  if(*c == 'w'){
+	  if(*c == 'w' && direction != 2){
 	  	direction = 4;
 	  	//printf("ok");
-	  }else if(*c == 's' ){
+	  }else if(*c == 's' && direction != 4){
 	  	direction = 2;
-	  }else if(*c == 'a'){
+	  }else if(*c == 'a' && direction != 1){
 	  	direction = 3;
-	  }else if(*c == 'd'){
+	  }else if(*c == 'd' && direction != 3){
 	  	direction = 1;
 	  }
 
@@ -241,40 +249,11 @@ int main(void) {
   			apple_y = rand() % (rol - 2) + 2;
 	  		
 	  		j++;
-	  		
+	  		lj = j;
+  			lk = k;
+	  		dir_ts++;
 	  		dir_te[dir_ts] = 1; 
-	  		dir_ts++;
-	  		int save = dir_ts;
 	  		
-	  		
-	  		while(length_c){
-	  			switch(dir_te[dir_ts]){
-	  			    case 1: lj--; break;
- 	  			    case 2: lk--; break;
-	  			    case 3: lj++; break;
-	  			    case 4: lk++; break;
-	  			}
-	  			 grid[lk][lj] = 1;
-	  			 dir_ts--;
-	  			 length_c--;
-	  		}
-	  		
-	  		dir_ts++;
-	  		switch(dir_te[dir_ts]){
-	  			    case 1: lj--; break;
- 	  			    case 2: lk--; break;
-	  			    case 3: lj++; break;
-	  			    case 4: lk++; break;
-	  			}
-	  			 grid[lk][lj] = 0;
-	  		
-	  		dir_ts = save;
-	  		length_c = length;
-	  		
-	  	}else{
-	  		j++;
-	  		dir_te[dir_ts] = 1; 
-	  		dir_ts++;
 	  		int save = dir_ts;
 	  		
 	  		
@@ -290,15 +269,54 @@ int main(void) {
 	  			 length_c--;
 	  		}
 	  		
+	  		//dir_ts++;
+	  		if(dir_ts >= 0){
+		  		switch(dir_te[dir_ts]){
+		  			    case 1: lj--; break;
+	 	  			    case 2: lk--; break;
+		  			    case 3: lj++; break;
+		  			    case 4: lk++; break;
+		  			}
+		  			 grid[lk][lj] = 0;
+		  	}	
+		  		dir_ts = save;
+		  		length_c = length;
+	  		
+	  		
+	  	}else if(grid[k][j + 1] == 2){
+	  		printf("you die by eating urself\n");
+	  		break;
+	  	}else{
+	  		j++;
+	  		lj = j;
+  			lk = k;
 	  		dir_ts++;
-	  		switch(dir_te[dir_ts]){
+	  		dir_te[dir_ts] = 1; 
+	  		
+	  		int save = dir_ts;
+	  		
+	  		
+	  		while(length_c){
+	  			switch(dir_te[dir_ts]){
+	  			    case 1: lj--; break;
+ 	  			    case 2: lk--; break;
+	  			    case 3: lj++; break;
+	  			    case 4: lk++; break;
+	  			}
+	  			 grid[lk][lj] = 2;
+	  			 dir_ts--;
+	  			 length_c--;
+	  		}
+	  		
+	  		if(dir_ts >= 0){
+	  			switch(dir_te[dir_ts]){
 	  			    case 1: lj--; break;
  	  			    case 2: lk--; break;
 	  			    case 3: lj++; break;
 	  			    case 4: lk++; break;
 	  			}
 	  			 grid[lk][lj] = 0;
-	  			 
+	  			} 
 	  		
 	  		dir_ts = save;
 	  		length_c = length;
@@ -309,10 +327,12 @@ int main(void) {
 	  		apple_x = rand() % (col - 2) + 2;
   			apple_y = rand() % (rol - 2) + 2;
 	  		
-	  		
-	  		k++;
-	  		dir_te[dir_ts] = 2; 
 	  		dir_ts++;
+	  		k++;
+	  		lj = j;
+  			lk = k;
+	  		dir_te[dir_ts] = 2; 
+	  		
 	  		int save = dir_ts;
 	  		
 	  		
@@ -323,30 +343,36 @@ int main(void) {
 	  			    case 3: lj++; break;
 	  			    case 4: lk++; break;
 	  			}
-	  			 grid[lk][lj] = 1;
+	  			 grid[lk][lj] = 2;
 	  			 dir_ts--;
 	  			 length_c--;
 	  		}
 	  		
 	  		
-	  		dir_ts++;
-	  		switch(dir_te[dir_ts]){
+	  		if(dir_ts >= 0){
+	  			switch(dir_te[dir_ts]){
 	  			    case 1: lj--; break;
  	  			    case 2: lk--; break;
 	  			    case 3: lj++; break;
 	  			    case 4: lk++; break;
 	  			}
 	  			 grid[lk][lj] = 0;
-	  			 
+	  			}	 
 	  		dir_ts = save;
 	  		length_c = length;
 	  		
 	  		
+	  	}else if(grid[k + 1][j] == 2){
+	  		printf("you die by eating urself\n");
+	  		break;
 	  	}else{
+	  	dir_ts++;
 	  		k++;
+	  		lj = j;
+  			lk = k;
 	  		printf("here1\n");
 	  		dir_te[dir_ts] = 2; 
-	  		dir_ts++;
+	  		
 	  		int save = dir_ts;
 	  		
 	  		
@@ -357,21 +383,21 @@ int main(void) {
 	  			    case 3: lj++; break;
 	  			    case 4: lk++; break;
 	  			}
-	  			 grid[lk][lj] = 1;
+	  			 grid[lk][lj] = 2;
 	  			 dir_ts--;
 	  			 length_c--;
 	  		}
 	  		
 	  		
-	  		dir_ts++;
-	  		switch(dir_te[dir_ts]){
+	  		if(dir_ts >= 0){
+	  			switch(dir_te[dir_ts]){
 	  			    case 1: lj--; break;
  	  			    case 2: lk--; break;
 	  			    case 3: lj++; break;
 	  			    case 4: lk++; break;
 	  			}
 	  			 grid[lk][lj] = 0;
-	  			 
+	  		} 
 	  			 
 	  		dir_ts = save;
 	  		length_c = length;
@@ -384,9 +410,11 @@ int main(void) {
 	  		
 	  		
 	  		j--;
-	  		
-	  		dir_te[dir_ts] = 3; 
+	  		lj = j;
+  			lk = k;
 	  		dir_ts++;
+	  		dir_te[dir_ts] = 3; 
+	  		
 	  		int save = dir_ts;
 	  		
 	  		
@@ -397,13 +425,13 @@ int main(void) {
 	  			    case 3: lj++; break;
 	  			    case 4: lk++; break;
 	  			}
-	  			 grid[lk][lj] = 1;
+	  			 grid[lk][lj] = 2;
 	  			 dir_ts--;
 	  			 length_c--;
 	  		}
 	  		
 	  		
-	  		dir_ts++;
+	  		if(dir_ts >= 0){
 	  		switch(dir_te[dir_ts]){
 	  			    case 1: lj--; break;
  	  			    case 2: lk--; break;
@@ -411,7 +439,7 @@ int main(void) {
 	  			    case 4: lk++; break;
 	  			}
 	  			 grid[lk][lj] = 0;
-	  			 
+	  		} 
 	  			 
 	  		dir_ts = save;
 	  		length_c = length;
@@ -421,10 +449,16 @@ int main(void) {
 	  			
 	  		//}
 	  		
+	  	}else if(grid[k][j - 1] == 2){
+	  		printf("you die by eating urself\n");
+	  		break;
 	  	}else{
 		  	j--;
+		  	dir_ts++;
+		  	lj = j;
+  			lk = k;
 		  	dir_te[dir_ts] = 3; 
-	  		dir_ts++;
+	  		
 	  		int save = dir_ts;
 	  		
 	  		
@@ -435,13 +469,13 @@ int main(void) {
 	  			    case 3: lj++; break;
 	  			    case 4: lk++; break;
 	  			}
-	  			 grid[lk][lj] = 1;
+	  			 grid[lk][lj] = 2;
 	  			 dir_ts--;
 	  			 length_c--;
 	  		}
 	  		
 	  		
-	  		dir_ts++;
+	  		if(dir_ts >= 0){
 	  		switch(dir_te[dir_ts]){
 	  			    case 1: lj--; break;
  	  			    case 2: lk--; break;
@@ -449,6 +483,7 @@ int main(void) {
 	  			    case 4: lk++; break;
 	  			}
 	  			 grid[lk][lj] = 0;
+	  		}
 	  			 
 	  		dir_ts = save;
 	  		length_c = length;
@@ -459,10 +494,12 @@ int main(void) {
 	  		apple_x = rand() % (col - 2) + 2;
   			apple_y = rand() % (rol - 2) + 2;
 	  		
-	  		
-	  		k--;
-	  		dir_te[dir_ts] = 4; 
 	  		dir_ts++;
+	  		k--;
+	  		lj = j;
+  			lk = k;
+	  		dir_te[dir_ts] = 4; 
+	  		
 	  		int save = dir_ts;
 	  		
 	  		
@@ -473,13 +510,13 @@ int main(void) {
 	  			    case 3: lj++; break;
 	  			    case 4: lk++; break;
 	  			}
-	  			 grid[lk][lj] = 1;
+	  			 grid[lk][lj] = 2;
 	  			 dir_ts--;
 	  			 length_c--;
 	  		}
 	  		
 	  		
-	  		dir_ts++;
+	  		if(dir_ts >= 0){
 	  		switch(dir_te[dir_ts]){
 	  			    case 1: lj--; break;
  	  			    case 2: lk--; break;
@@ -487,13 +524,20 @@ int main(void) {
 	  			    case 4: lk++; break;
 	  			}
 	  			 grid[lk][lj] = 0;
+	  		}
 	  		dir_ts = save;
 	  		length_c = length;
 	  		
+	  	}else if(grid[k - 1][j] == 2){
+	  		printf("you die by eating urself\n");
+	  		break;
 	  	}else{
 		  	k--;
+		  	lj = j;
+  			lk = k;
+		  	dir_ts++;
 		  	dir_te[dir_ts] = 4; 
-	  		dir_ts++;
+	  		
 	  		int save = dir_ts;
 	  		
 	  		
@@ -504,13 +548,13 @@ int main(void) {
 	  			    case 3: lj++; break;
 	  			    case 4: lk++; break;
 	  			}
-	  			 grid[lk][lj] = 1;
+	  			 grid[lk][lj] = 2;
 	  			 dir_ts--;
 	  			 length_c--;
 	  		}
 	  		
 	  		
-	  		dir_ts++;
+	  		if(dir_ts >= 0){
 	  		switch(dir_te[dir_ts]){
 	  			    case 1: lj--; break;
  	  			    case 2: lk--; break;
@@ -518,11 +562,17 @@ int main(void) {
 	  			    case 4: lk++; break;
 	  			}
 	  			 grid[lk][lj] = 0;
-	  			 
+	  			}
 	  		dir_ts = save;
 	  		length_c = length;
 		}
+	  }else{
+	  	printf("you die by going outside of bound...\n");
+	  	break;
 	  }
+
+	
+		printf("dir: %d | ts: %d |\n",dir_te[dir_ts],dir_ts);
 
   }
   return 0;
