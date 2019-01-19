@@ -5,7 +5,11 @@
 #                again [due the getch() function i copied and pasted from
 #                stack over flow] [what else can you expect me to do it
 #                without using ncurses?]
+#             3. Apple will sometimes randomly generate inside ur body
 #
+# bad design: 1. not showing boundaries
+#             2. not using ncurses (also a feature) 
+#            
 # bad coding practices: (you can use this as an classic example for bad 
 #                       coding practices, so it is actually a feature)
 #                a. no separate functions/header files
